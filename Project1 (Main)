@@ -11,16 +11,16 @@ import sys
 
 pd.set_option('mode.chained_assignment',None) #Surpress Warnings in Console.
 
-root = r'C:/Users/Desktop/Project1-ASN-401104179/storage'
+root = r'storage'
 Storage = pd.read_csv(root + '.csv') 
 
-root2 = r'C:/Users/Desktop/Project1-ASN-401104179/Number'
+root2 = r'Number'
 Int = pd.read_csv(root2 + '.csv') #Customer Counter
 
-root3 = r'C:/Users/Desktop/Project1-ASN-401104179/Orders'
+root3 = r'Orders'
 Orders = pd.read_csv(root3 + '.csv')
 
-root4 = r'C:/Users/Desktop/Project1-ASN-401104179/Logistics'
+root4 = r'Logistics'
 Logistics = pd.read_csv(root4 + '.csv')
 
 #=============================================================================================#
