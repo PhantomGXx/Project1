@@ -1,4 +1,486 @@
 #Alireza Saidi-Nejat
 #Project One
 
-#*Order Module*
+#=============================================================================================#
+#A csv file must exist to show all our storage and available merchandise.
+import csv
+import pandas as pd
+from datetime import datetime
+import random
+import sys
+
+pd.set_option('mode.chained_assignment',None) #Surpress Warnings in Console.
+
+root = r'C:/Users/Desktop/Project1-ASN-401104179/storage'
+Storage = pd.read_csv(root + '.csv') 
+
+root2 = r'C:/Users/Desktop/Project1-ASN-401104179/Number'
+Int = pd.read_csv(root2 + '.csv') #Customer Counter
+
+root3 = r'C:/Users/Desktop/Project1-ASN-401104179/Orders'
+Orders = pd.read_csv(root3 + '.csv')
+
+root4 = r'C:/Users/Desktop/Project1-ASN-401104179/Logistics'
+Logistics = pd.read_csv(root4 + '.csv')
+
+#=============================================================================================#
+#A class that represents customer's shopping cart.
+class ShoppingCart:
+    def __init__(self):
+        self.Items = []
+
+    def AddItem(self, item_code, item_name, item_price,item_quantity):
+        self.Items.append( [item_code, item_name, item_price, item_quantity] )
+        CIC.append(int(ShoppingCode))
+        CIP.append(int(SIP[SI]))
+        CIQ.append(ShoppingQuantity)
+        CIN.append(SIN[SI])
+
+    def RemoveItem(self, index):
+        self.Items.pop(index)
+        CIC.pop(RI)
+        CIP.pop(RI)
+        CIQ.pop(RI)
+        CIN.pop(RI)
+
+    def Total(self):
+        Total = 0
+        for i in range(len(Cart.Items)):
+            PriceItems = CIQ[i] * CIP[i]
+            Total += PriceItems
+        return Total
+
+
+#=============================================================================================#
+#Functions created to get the valid input for each question/prompt asked in code.
+def GetValidInput(Input, Validator):
+    while True:
+        V = input(Input).upper() #Convert input to uppercase for easier comparison.
+        if Validator(V):
+            return V
+        else:
+            print('Try again.\n')
+
+def EorC(V): #Employee or Customer
+    return ['C','CUSTOMER','E','EMPLOYEE'].__contains__(V)
+
+def Password(V): #Employee Password
+    return V == '1234'
+
+def EmployeeMenuValue(V): #Employee Menu's Input values
+    return ['1','2','3','4','5','6','7','8'].__contains__(V)
+    
+def ItemField(V): #Updating Item Field Options
+    return ['QUANTITY','Q','P','PRICE'].__contains__(V)
+
+def OrderMenu(V): #Order Menu options
+    return ['C','CLEAR','V','VIEW'].__contains__(V)
+
+def Quantity(V): #Shopping Item's Quantities
+    return str(V).isnumeric() and int(V) <= int(SIQ[SI])
+
+def Shopping(V): #Shopping Menu Input values
+    return ['P','PAY','PAYMENT','C','CONTINUE','D','DISPLAY','R','REMOVE','E','EXIT'].__contains__(V)
+
+def Alphabetic(V : str): #Checking if Input is ALPHABETIC
+    return V.isalpha()
+
+def NumberLength(V): #Checking Length of Input
+    return len(V) == 10
+
+def State(V): #State Options
+    return V == 'TEHRAN' or V == 'TABRIZ' or V == 'ISFAHAN'
+
+def TehranCity(V): #Tehran City Options
+    return V == 'TEHRAN' or V == 'KARAJ'
+
+def IsfahanCity(V): #Isfahan City Options
+    return V == 'ISFAHAN' or V == 'MOBARAKEH'
+
+def TabrizCity(V): #Tabriz City Options
+    return V == 'TABRIZ' or V == 'AZARSHAHR'
+
+def DELIVERY(V): #Delivery Time Options
+    return TIME.__contains__(V)
+    
+#=============================================================================================#
+#Extra Functions to make the code cleaner.
+def UpdateQuantity():
+    Quantity1 = list(Merch['ItemQuantity'])
+    Quantity2 = []
+    for x in Quantity1:
+        if str(x) == '0':
+            Quantity2.append('Unavailable')
+        else:
+            Quantity2.append(x)
+        
+    Merch['ItemQuantity'] = Quantity2
+
+def CartDisplay():
+    CartFrame['Code'] = CIC
+    CartFrame['Item Name'] = CIN
+    CartFrame['Item Quantity'] = CIQ
+    CartFrame['Item Price'] = CIP
+    CartFrameI = CartFrame.groupby('Code').aggregate({'Item Name':'sum','Item Quantity':'sum','Item Price':'sum'})
+    print(CartFrameI)
+    print('\n')
+
+def EmployeeMenu():
+    print("What would you like to do?")
+    print("1. View Storage.")
+    print("2. Add Item to Storage.")
+    print("3. Remove Item from Storage.")
+    print("4. Update Item in Storage.")
+    print("5. Reset Customer Count (Which is equal to",Int['int'][0],"at the moment).")
+    print("6. Access Customer Orders.")
+    print("7. Access Logistics Schedule.")
+    print("8. Exit.")
+    
+Answer = GetValidInput('Hello! Welcome to "La Ropa de Phantom"! Are you an [E]MPLOYEE or [C]USTOMER? \n',EorC)
+
+#=============================================================================================#
+#Employee Section
+if Answer == 'E' or Answer == 'EMPLOYEE':
+    GetValidInput('Please enter password: (Hint: 1234)\n',Password) #Entry Password for Employees
+    EmployeeMenu()
+    EMA = EmployeeMenuAnswer = GetValidInput('',EmployeeMenuValue)
+    
+    while True:
+        SIC = StorageItemCodes = list(Storage['ItemCode'])
+        
+        if EMA == '1':
+            #Viewing Storage
+            print(Storage)
+            print('Which can be found at',root,'\n')
+            
+        elif EMA == '2':
+            #Adding an Item to Storage
+            ItemName1 = input('What is the name of the item you would like to add?\n')
+            ItemQuantity1 = input('How many of this item are you adding?\n')
+            ItemPrice1 = input('What is the price of this item?\n')
+            ItemCode1 = input('What is the code of the item?\n')
+            
+            NewItem = {'ItemName': ItemName1, 'ItemQuantity': ItemQuantity1, 'ItemCode': ItemCode1, 'ItemPrice': ItemPrice1}
+            Storage = Storage.append(NewItem, ignore_index=True)
+            print('Item has been added to storage!\n')
+            
+        elif EMA == '3':
+            #Removing an Item from Storage
+            print(Storage)
+            RemovalCode = str(input('Please enter the code of the item you would like to remove.\n'))
+            try:
+                RI = RemovalIndex = SIC.index(int(RemovalCode))
+                Storage = Storage.drop(RI)
+                print('Item has been removed from storage!\n')
+            except:
+                print('Item does not exist. Please Try again.\n')
+            
+        elif EMA == '4':
+            #Updating an Item in Storage
+            print(Storage)
+            UpdateCode = input('Please enter the Code of the item you would like to update.\n')
+            
+            try:
+                UI = UpdateIndex = SIC.index(int(UpdateCode))
+                UpdateField = GetValidInput('Which field would you like to update? ([Q]uantity or [P]rice?)\n',ItemField)
+                if UpdateField == 'Q':
+                    UpdateField = 'Quantity'
+                    b = 1
+                else:
+                    UpdateField = 'Price'
+                    b = 2
+                UpdateValue = str(input(f"What is the new {UpdateField} for this item?\n"))
+                
+                if b == 1:
+                    Storage.iloc[UI] = {'ItemName':Storage['ItemName'][UI] , 'ItemQuantity': UpdateValue, 'ItemCode': Storage['ItemCode'][UI], 'ItemPrice': Storage['ItemPrice'][UI]}
+                    
+                else:
+                    Storage.iloc[UI] = {'ItemName':Storage['ItemName'][UI] , 'ItemQuantity': Storage['ItemQuantity'][UI], 'ItemCode': Storage['ItemCode'][UI], 'ItemPrice': UpdateValue}
+                
+                print('Item has been updated in storage!\n')
+            
+            except:
+                print('Item does not exist. Please Try again.\n')
+
+        
+        elif EMA == '5':
+            #Reseting Customer Counter
+            Int['int'][0] = 1
+            Int.to_csv('Number.csv',index=False)
+            print("Customer counter has been reset to one!")
+        
+        elif EMA == '6':
+            #Accessing Customer Orders. You can view it or clear it.
+            X = GetValidInput("Would you like to [V]IEW the Customer Orders or [C]LEAR it?\n",OrderMenu)
+            if X == 'V' or X == 'VIEW':
+                print(Orders)           
+                print('Which can be found at',root3,'\n')
+            else:
+                for i in range(len(Orders['NumberOfItemsBought'])):
+                    Orders = Orders.drop(i)
+                
+                Orders.to_csv('Orders.csv',index=False)
+                print("Customer Orders has been cleared!")
+            
+        elif EMA == '7':
+            #Accessing Logistics Schedule. You can view it or clear it.
+            X = GetValidInput("Would you like to [V]IEW the Logistics Schedule or [C]LEAR it?\n",OrderMenu)
+            if X == 'V' or X == 'VIEW':
+                print(Logistics)          
+                print('Which can be found at',root4,'\n')
+            else:
+                Logistics['Morning'][0] = 0
+                Logistics['Midday'][0] = 0
+                Logistics['Afternoon'][0] = 0
+            Logistics.to_csv('Logistics.csv',index=False)
+            
+        elif EMA == '8':
+            sys.exit()
+        
+        Storage.to_csv('storage.csv', index=False)
+        print('\n')
+        EmployeeMenu()
+        EMA = EmployeeMenuAnswer = GetValidInput('',EmployeeMenuValue)
+    
+#=============================================================================================#
+#Customer Section
+else:
+    Merch = Storage[:]
+    
+    print('This is our Merchandise!\n')
+    Cart = ShoppingCart()
+    CIC = CartItemCodes = []
+    CIN = CartItemNames = []
+    CIQ = CartItemQuantities = []
+    CIP = CartItemPrices = []
+    CartFrame = pd.DataFrame(columns = ['Code','Item Name','Item Quantity','Item Price'])
+    
+    while True:
+        UpdateQuantity()
+        print(Merch)
+        SIC = StorageItemCodes = list(Merch['ItemCode'])
+        SIP = StorageItemPrices = list(Merch['ItemPrice'])
+        SIQ = StorageItemQuantities = list(Merch['ItemQuantity'])
+        SIN = StorageItemNames = list(Merch['ItemName'])
+        
+        X = GetValidInput("Would you like to [C]ONTINUE Shopping, move to the [P]AYMENT Process, [R]EMOVE an item from the cart, [D]ISPLAY the cart and its total price or [E]XIT the shop? \n",Shopping)
+        
+        if X == 'E' or X == 'EXIT':
+            print('Have a good day!')
+            sys.exit()
+            #Leaving The Shop
+            
+        else:
+            if X == 'C' or X == 'CONTINUE':
+                #Continuing Shopping
+                ShoppingCode = input("What is the code of the item you'd like to add to your cart?\n")
+                
+                try:
+                    SI = ShoppingIndex = SIC.index(int(ShoppingCode))
+                    b = 1
+                except:
+                    print('Item does not exist. Please try again.\n')
+                    b = 2
+                    
+                if b == 1:
+                    if SIQ[SI] == 'Unavailable':
+                        print('Item unavailable. Please try again.\n')
+                    else:
+                        ShoppingQuantity = int(GetValidInput("How many do you want? (Please choose according to the listed Quantity.)\n",Quantity))
+                        Cart.AddItem(Storage['ItemCode'][SI], Storage['ItemName'][SI],Storage['ItemPrice'][SI] , ShoppingQuantity)
+                        SIQ[SI] = int(SIQ[SI]) - ShoppingQuantity
+                        Merch['ItemQuantity'] = SIQ[:]
+                        print('Item has been added to cart!\n') 
+                else:
+                    print('Try again.\n')
+                    
+            elif X == 'R' or X == 'REMOVE':
+                #Removing an Item from Shopping Cart
+                if len(Cart.Items) == 0:
+                    print('There are no items in cart to remove! Please continue shopping.\n')
+                else:
+                    RemoveCode = int(input("What is the code of the item you'd like to (completely) remove from your cart?\n"))
+                    
+                    try:
+                        RI = RemoveIndex = CIC.index(RemoveCode)
+                        b = 1
+                    except:
+                        print('Item does not exist in cart.\n')
+                        b = 2
+                    
+                    if b == 1:
+                        RII = RemoveIndexI = SIC.index(RemoveCode)
+                        RemovedQuantity = CIQ[RI]
+                        if SIQ[RII] == 'Unavailable':
+                            SIQ[RII] = RemovedQuantity
+                        else:
+                            SIQ[RII] = SIQ[RII] + RemovedQuantity
+                        
+                        Merch['ItemQuantity'] = SIQ[:]
+                        Cart.Items.pop(RI)
+                        print('Item has been removed from cart!\n')
+                    
+                    else:
+                        print('Try again.\n')          
+                    
+            elif X == 'D' or X == 'DISPLAY':
+                if len(Cart.Items) == 0:
+                    print('There are no items in cart to display! Please continue shopping.\n')
+                else:
+                    print('This is your cart!\n')
+                    CartDisplay()
+                    Total = Cart.Total()
+                    print('Total Price = $',Total,'\n',sep='')
+                
+            elif X == 'P' or X == 'PAY' or X == 'PAYMENT':
+                if len(Cart.Items) == 0:
+                    print('There are no items in cart to pay for! Please continue shopping.\n')
+                else:
+                    break
+    
+    I = Int['int'][0] 
+    Int['int'][0] = Int['int'][0] + 1
+    Int.to_csv('Number.csv',index=False)
+    
+    #Payment Section for Customer
+    print('Dear Customer.')
+    BuyerFirstName = GetValidInput("Please enter your first name: \n",Alphabetic) 
+    BuyerLastName = GetValidInput("Please enter your last name: \n",Alphabetic)
+    PhoneNumber = GetValidInput("Please enter your phone number (Must be 10 digits): \n",NumberLength)
+    
+    #=============================================================================================#
+    #Logistics Location + Address Specification
+    BuyerState = GetValidInput('Please enter your state. [TEHRAN] / [ISFAHAN] / [TABRIZ]\n',State)
+    if BuyerState == 'TEHRAN':
+        BuyerStateCode = 1
+        BuyerCity = GetValidInput('Please enter your city. [TEHRAN] / [KARAJ] \n',TehranCity)
+        if BuyerCity == 'TEHRAN':
+            BuyerCityCode = 1
+        else:
+            BuyerCityCode = 2
+    
+    elif BuyerState == 'ISFAHAN':
+        BuyerStateCode = '2'
+        BuyerCity = GetValidInput('Please enter your city. [ISFAHAN] / [MOBARAKEH] \n',IsfahanCity)
+        if BuyerCity == 'ISFAHAN':
+            BuyerCityCode = 1
+        else:
+            BuyerCityCode = 2
+    
+    else: #TABRIZ
+        BuyerStateCode = '3'
+        BuyerCity = GetValidInput('Please enter your city. [TABRIZ] / [AZARSHAHR] \n',TabrizCity)
+        if BuyerCity == 'TABRIZ':
+            BuyerCityCode = 1
+        else:
+            BuyerCityCode = 2
+    
+    BuyerAddress = input("Please enter your address: \n")
+    BuyerPostalCode = GetValidInput('Please enter your postal code (Must be 10 digits): \n',NumberLength)
+    BuyerPurchaseCode = ''.join(random.choices('0123456789', k=11))
+    
+    #Date of Purchase and Delivery (Tomorrow)
+    now = datetime.now()
+    PurchaseDate = now.strftime("%d/%m/%Y")
+    DeliveryDate = str(int(PurchaseDate[1]) + 1) + PurchaseDate[2:]
+    
+    if BuyerStateCode == 1:
+        LogisticsService = 'Exclusive Postal'
+    else:
+        LogisticsService = 'Out of Town Postal'
+    
+    TIME = ['3']
+    print('\n')
+
+    #Logistics Section
+    print("Available times for delivery...")
+        
+    if Logistics['Afternoon'][0] < 3:
+        print("1.Afternoon")
+        TIME.append('1')
+        
+    if Logistics['Midday'][0] < 3:
+        print("2.Midday")
+        TIME.append('2')
+    
+    if len(TIME) == 1:
+        print(f"Only available time is 'Morning'. Your purchase will be delivered in the Morning of {DeliveryDate} .")
+        DeliveryTime = 'Morning'
+        Logistics['Morning'][0] = Logistics['Morning'][0] + 1
+    else:
+        print("3.Morning")
+        Time = GetValidInput("Please enter the number of the intended time for your delivery to arrive.\n",DELIVERY)
+        
+        if Time == '1':
+            DeliveryTime = 'Afternoon'
+            Logistics['Afternoon'][0] = Logistics['Afternoon'][0] + 1
+            print(f"Your purchase will be delivered in the Afternoon of {DeliveryDate} (Tomorrow).")
+        elif Time == '2':
+            DeliveryTime = 'Midday'
+            Logistics['Midday'][0] = Logistics['Midday'][0] + 1
+            print(f"Your purchase will be delivered on the Midday of {DeliveryDate} (Tomorrow).")
+        else:
+            DeliveryTime = 'Morning'
+            Logistics['Morning'][0] = Logistics['Morning'][0] + 1
+            print(f"Your purchase will be delivered in the Morning of {DeliveryDate} (Tomorrow).")
+    
+    Logistics.to_csv('Logistics.csv', index=False)
+    
+    CreditCard = str(input("Please enter your credit card number. (Must be 16 digits)\n"))
+    
+    if len(CreditCard) == 16:
+        #Credit Card Number = 16 Digits -> Payment Successful!
+        print("Payment Process Successful!")
+        
+        #Payment Confirmation as txt file
+        PCName = 'zPaymentConfirmation' + str(I) + '.txt'
+        with open(PCName, 'w') as file:
+            file.write(f"Your Payment for shopping in 'La Ropa de Phantom' on {PurchaseDate} has been successful!\n")
+            file.write(f"{BuyerFirstName} {BuyerLastName}'s Credit Card Number is {CreditCard[:4]} - **** - **** - {CreditCard[-4:]}.\n")
+        print(f"Your Payment Confirmation File by the name {PCName} is located in the Project File.\n")
+        
+        #Customer Receipt as txt file
+        ReceiptName = 'zReceipt' + str(I) + '.txt'
+        with open(ReceiptName, 'w') as file:
+            file.write(f"Purchase Code: {BuyerPurchaseCode}\n")
+            file.write(f"{BuyerFirstName} {BuyerLastName}'s Receipt for shopping in 'La Ropa de Phantom' on {PurchaseDate}.\n")
+            file.write(f"Customer Address: {BuyerAddress}\n") 
+            
+            Total = Cart.Total()
+            NamePrice = []
+            for i in range(len(CartItemNames)):
+                NamePrice.append([ CartItemNames[i] , str(CartItemPrices[i]) + str('$') , CartItemQuantities[i] ] )
+            file.write(f"Shopped Items Names, Prices and Quantities: {NamePrice}\n")
+            file.write(f"Total Price: {Total}$\n")
+            file.write(f"Delivery will be done by {LogisticsService} on the date of {DeliveryDate} at the estimated time: {DeliveryTime}\n")
+        print(f"Your Receipt File by the name of {ReceiptName} is located in the Project File.\n")
+        
+        #=============================================================================================#
+        #Updating Orders in csv file.
+        Sum = 0
+        for i in range(len(CartItemQuantities)):
+            Sum = Sum + int(CartItemQuantities[i])
+        DeliveryTax = BuyerStateCode * 0.9
+        
+        NewOrder = {'NumberOfItemsBought': Sum, 'PurchaseCode': str(BuyerPurchaseCode) + '$', 'NetPurchasePrice': Total, 'ShippingPrice': str(BuyerStateCode) + '$' , 'ShippingTax': str(DeliveryTax) + '$'}
+        Orders = Orders.append(NewOrder, ignore_index=True)
+        Orders.to_csv('Orders.csv',index=False)
+        
+        #Updating Our Merchandise as we are sure our product has been sold.
+        Merch.to_csv('storage.csv', index=False)
+        
+        print("Thank you for shopping from us!")
+        
+    else:
+        #Credit Card Number =/= 16 Digits -> Payment Unsuccessful...
+        print("Payment Process unsuccessful...")
+        
+        #Payment Confirmation as txt file
+        PCName = 'zPaymentConfirmation' + str(I) + '.txt'
+        with open(PCName, 'w') as file:
+            file.write("Your Payment for shopping in 'La Ropa de Phantom' on {PurchaseDate} has been unsuccessful! Your items will be returned to the store.\n")
+            file.write(f"{BuyerFirstName} {BuyerLastName}'s Credit Card Number is incorrect. Please try shopping again!\n")
+            Int['int'][0] = Int['int'][0] - 1
+        print(f"Your Payment Confirmation File by the name {PCName} is located in the Project File.\n")
+        print(f"Your Last Cart Items: {Cart.Items}")
+
